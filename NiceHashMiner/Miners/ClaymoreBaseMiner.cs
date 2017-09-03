@@ -136,7 +136,7 @@ namespace NiceHashMiner.Miners {
 
 
         protected override string GetDevicesCommandString() {
-            int amdDeviceCount = ComputeDeviceManager.Query.amdGpus.Count;
+            int amdDeviceCount = ComputeDeviceManager.Query.AMD_Devices.Count;
             Helpers.ConsolePrint("ClaymoreIndexing", String.Format("Found {0} AMD devices", amdDeviceCount));
             string extraParams = ExtraLaunchParametersParser.ParseForMiningSetup(MiningSetup, DeviceType.AMD);
             string deviceStringCommand = " -di ";
