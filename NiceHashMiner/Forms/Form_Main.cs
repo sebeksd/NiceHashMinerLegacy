@@ -451,7 +451,9 @@ namespace NiceHashMiner
                 // less GPUs than before, ACT!
                 try
                 {
-                    System.Diagnostics.Process.Start(Directory.GetCurrentDirectory() + "\\OnGPUsLost.bat");
+                    ProcessStartInfo onGPUsLost = new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\OnGPUsLost.bat");
+                    onGPUsLost.WindowStyle = ProcessWindowStyle.Minimized;
+                    System.Diagnostics.Process.Start(onGPUsLost);
                 }
                 catch (Exception ex)
                 {
