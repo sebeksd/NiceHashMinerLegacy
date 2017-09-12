@@ -1,0 +1,4 @@
+language: csharp
+solution: NiceHashMiner/NiceHashMinerLegacy.csproj
+install:
+  - nuget restore NiceHashMinerLegacy.sln
