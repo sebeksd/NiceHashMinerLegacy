@@ -30,6 +30,7 @@ namespace NiceHashMiner
         private Timer _startupTimer;
         private Timer _idleCheck;
         private SystemTimer _computeDevicesCheckTimer;
+        private Timer _autoRestartTimer = null; // used for Internet connection message
 
         private bool _showWarningNiceHashData;
         private bool _demoMode;
@@ -191,6 +192,26 @@ namespace NiceHashMiner
             }
         }
 
+        private void RestartCountdown(bool lActive)
+        {
+            // restart on no action can be enabled only when autostart mining is enabled (it mean NHML is working completely without user)
+            if (ConfigManager.GeneralConfig.AutoStartMining)
+            {
+                if (lActive && (_autoRestartTimer == null))
+                {
+                    _autoRestartTimer = new Timer();
+                    _autoRestartTimer.Tick += AutoRestart_Tick;
+                    _autoRestartTimer.Interval = 30000;
+                    _autoRestartTimer.Start();
+                }
+                else if (!lActive && (_autoRestartTimer != null))
+                {
+                    _autoRestartTimer.Stop();
+                    _autoRestartTimer = null;
+                }
+            }
+        }
+
         public void AfterLoadComplete()
         {
             _loadingScreen = null;
@@ -228,6 +249,16 @@ namespace NiceHashMiner
                     }
                 }
             }
+        }
+
+        private void AutoRestart_Tick(object sender, EventArgs e)
+        {
+            _autoRestartTimer.Stop();
+            _autoRestartTimer = null;
+
+            Helpers.ConsolePrint("NICEHASH", "No connection message displayed but no user action was taken, restarting");
+
+            Application.Restart();
         }
 
         // This is a single shot _benchmarkTimer
@@ -1023,10 +1054,12 @@ namespace NiceHashMiner
             if (Globals.NiceHashData == null)
             {
                 if (showWarnings)
-                {
+                { 
+                    RestartCountdown(true);
                     MessageBox.Show(International.GetText("Form_Main_msgbox_NullNiceHashDataMsg"),
                         International.GetText("Error_with_Exclamation"),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    RestartCountdown(false);
                 }
                 return StartMiningReturnType.IgnoreMsg;
             }
