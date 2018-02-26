@@ -536,6 +536,8 @@ namespace NiceHashMiner
         {
             if (ComputeDeviceManager.Query.CheckVideoControllersCountMismath())
             {
+                Helpers.ConsolePrint("NICEHASH", "Running OnGPUsMismatch.bat error: GPU Count Mismath");
+
                 // less GPUs than before, ACT!
                 try
                 {

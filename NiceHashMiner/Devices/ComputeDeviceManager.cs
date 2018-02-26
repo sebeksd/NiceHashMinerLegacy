@@ -435,6 +435,23 @@ namespace NiceHashMiner.Devices
                     {
                         if (ConfigManager.GeneralConfig.ShowDriverVersionWarning && !allVideoContollersOK)
                         {
+                            if (ConfigManager.GeneralConfig.AutoStartMining)
+                            {
+                                Helpers.ConsolePrint("NICEHASH", "Running OnGPUsMismatch.bat error: GPU VideoContollers not ok");
+                                try
+                                {
+                                    var onGpusLost = new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\OnGPUsLost.bat")
+                                    {
+                                        WindowStyle = ProcessWindowStyle.Minimized
+                                    };
+                                    Process.Start(onGpusLost);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Helpers.ConsolePrint("NICEHASH", "OnGPUsMismatch.bat error: " + ex.Message);
+                                }
+                            }
+                            
                             var msg = International.GetText("QueryVideoControllers_NOT_ALL_OK_Msg");
                             foreach (var vc in avaliableVideoControllers)
                             {
